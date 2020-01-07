@@ -3,8 +3,8 @@ const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 const width = window.innerWidth;
 const height = window.innerHeight;
 //total number of EITHER vertical or horizontal cells
-const horizontalCells = 6;
-const verticalCells = 5;
+const horizontalCells = 10;
+const verticalCells = 8;
 
 const unitLengthX = width / horizontalCells;
 const unitLengthY = height / verticalCells;
@@ -249,6 +249,7 @@ Events.on(engine, "collisionStart", event => {
           Body.setStatic(body, false);
         }
       });
+      document.querySelector(".winner").classList.toggle("hidden");
     }
   });
 });
