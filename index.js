@@ -1,9 +1,9 @@
-const { Engine, Render, Runner, World, Bodies, Body } = Matter;
+const { Engine, Render, Runner, World, Bodies, Body, Events } = Matter;
 
 const width = 600;
 const height = 600;
 //total number of EITHER vertical or horizontal cells
-const cells = 12;
+const cells = 3;
 const unitLength = width / cells;
 const wallThickness = 2;
 
@@ -26,10 +26,22 @@ Runner.run(Runner.create(), engine);
 
 // walls
 const walls = [
-  Bodies.rectangle(width / 2, 0, width, wallThickness, { isStatic: true }),
-  Bodies.rectangle(width / 2, height, width, wallThickness, { isStatic: true }),
-  Bodies.rectangle(0, height / 2, wallThickness, height, { isStatic: true }),
-  Bodies.rectangle(width, height / 2, wallThickness, height, { isStatic: true })
+  Bodies.rectangle(width / 2, 0, width, wallThickness, {
+    isStatic: true,
+    label: "outerWall"
+  }),
+  Bodies.rectangle(width / 2, height, width, wallThickness, {
+    isStatic: true,
+    label: "outerWall"
+  }),
+  Bodies.rectangle(0, height / 2, wallThickness, height, {
+    isStatic: true,
+    label: "outerWall"
+  }),
+  Bodies.rectangle(width, height / 2, wallThickness, height, {
+    isStatic: true,
+    label: "outerWall"
+  })
 ];
 
 World.add(world, walls);
@@ -128,7 +140,7 @@ horizontals.forEach((rowOfWalls, rowIndex) => {
       rowIndex * unitLength + unitLength,
       unitLength,
       wallThickness,
-      { isStatic: true }
+      { isStatic: true, label: "innerHorizontalWall" }
     );
     World.add(world, wall);
   });
@@ -144,7 +156,7 @@ verticals.forEach((colOfWalls, rowIndex) => {
       rowIndex * unitLength + unitLength / 2,
       wallThickness,
       unitLength,
-      { isStatic: true }
+      { isStatic: true, label: "innerVerticalWall" }
     );
     World.add(world, wall);
   });
@@ -156,17 +168,19 @@ const goal = Bodies.rectangle(
   height - unitLength / 2,
   unitLength * 0.7,
   unitLength * 0.7,
-  { isStatic: true }
+  { isStatic: true, label: "goal" }
 );
 World.add(world, goal);
 
 //starting icon to move throughout the maze
-const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4);
+const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4, {
+  label: "ball"
+});
 World.add(world, ball);
 
 document.addEventListener("keypress", event => {
   const { x, y } = ball.velocity;
-  console.log("x velocity: ", x, "y velocity: ", y);
+  // console.log("x velocity: ", x, "y velocity: ", y);
   const pressed = event.key.toLocaleLowerCase();
   if (pressed === "w") {
     // console.log("move up");
@@ -183,4 +197,19 @@ document.addEventListener("keypress", event => {
   } else {
     console.log("ANY other key besides WASD");
   }
+});
+
+//win condition
+
+Events.on(engine, "collisionStart", event => {
+  event.pairs.forEach(collision => {
+    const labels = ["ball", "goal"];
+
+    if (
+      labels.includes(collision.bodyA.label) &&
+      labels.includes(collision.bodyB.label)
+    ) {
+      console.log("winner");
+    }
+  });
 });
