@@ -1,6 +1,8 @@
 # mazeGame
 
 A maze game that autogenerates a **solvable** puzzle randomly. With a *user* object that the player can control using the standard WASD movement pattern.
+
+
       -W = Up
       -A = Left
       -S = Down
