@@ -3,12 +3,13 @@ const { Engine, Render, Runner, World, Bodies, Body } = Matter;
 const width = 600;
 const height = 600;
 //total number of EITHER vertical or horizontal cells
-const cells = 4;
+const cells = 12;
 const unitLength = width / cells;
 const wallThickness = 2;
 
 const engine = Engine.create();
 const { world } = engine;
+world.gravity.y = false;
 const render = Render.create({
   element: document.body,
   engine: engine,
@@ -164,15 +165,21 @@ const ball = Bodies.circle(unitLength / 2, unitLength / 2, unitLength / 4);
 World.add(world, ball);
 
 document.addEventListener("keypress", event => {
+  const { x, y } = ball.velocity;
+  console.log("x velocity: ", x, "y velocity: ", y);
   const pressed = event.key.toLocaleLowerCase();
   if (pressed === "w") {
-    console.log("move up");
+    // console.log("move up");
+    Body.setVelocity(ball, { x, y: y - 5 });
   } else if (pressed === "a") {
-    console.log("move left");
+    // console.log("move left");
+    Body.setVelocity(ball, { x: x - 5, y });
   } else if (pressed === "s") {
-    console.log("move down");
+    // console.log("move down");
+    Body.setVelocity(ball, { x, y: y + 5 });
   } else if (pressed === "d") {
-    console.log("move right");
+    // console.log("move right");
+    Body.setVelocity(ball, { x: x + 5, y });
   } else {
     console.log("ANY other key besides WASD");
   }
